@@ -8,7 +8,7 @@ class SurveyQuestionsProvider extends ChangeNotifier {
   SurveyQuestionsProvider(this._survey);
 
   void next() {
-    if (_index >= _survey.questions.length) return;
+    if (_index >= _survey.questions.length - 1) return;
     _index++;
     notifyListeners();
   }
@@ -31,5 +31,5 @@ class SurveyQuestionsProvider extends ChangeNotifier {
     return false;
   }
 
-  int get index => _index;
+  int get index => _index + 1;
 }

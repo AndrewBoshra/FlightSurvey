@@ -3,9 +3,12 @@ import 'dart:ui';
 
 import 'package:flight_survey/constants/colors.dart';
 import 'package:flight_survey/constants/dims.dart';
-import 'package:flight_survey/widgets/dot.dart';
+import 'package:flight_survey/services/survey_questions_provider.dart';
+import 'package:flight_survey/widgets/survey_page.dart';
+import 'package:flight_survey/widgets/up_down_buttons.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:provider/provider.dart';
 
 class FlightSurveyScreen extends StatelessWidget {
   const FlightSurveyScreen({Key? key}) : super(key: key);
@@ -41,41 +44,61 @@ class FlightSurveyScreen extends StatelessWidget {
           elevation: 0,
         ),
         backgroundColor: Colors.transparent,
-        body: Stack(
-          children: [
-            Positioned(
-              top: kPlanetop - kPlaneBlur,
-              left: kPlaneleft - kPlaneBlur,
-              child: Transform.rotate(
-                angle: pi,
-                child: SvgPicture.asset(
-                  'assets/svgs/plane.svg',
-                  width: kPlaneSize + 2 * kPlaneBlur,
+        body: Consumer<SurveyQuestionsProvider>(
+          builder: (context, survey, _) => Stack(
+            children: [
+              Positioned(
+                top: kPlanetop - kPlaneBlur,
+                left: kPlaneleft - kPlaneBlur,
+                child: Opacity(
+                  opacity: 0,
+                  child: Transform.rotate(
+                    angle: pi,
+                    child: SvgPicture.asset(
+                      'assets/svgs/plane.svg',
+                      width: kPlaneSize + 2 * kPlaneBlur,
+                    ),
+                  ),
                 ),
               ),
-            ),
-            //Glow Filter
-            Positioned(
-              top: kPlanetop,
-              left: kPlaneleft,
-              child: ClipRect(
-                child: BackdropFilter(
-                  filter:
-                      ImageFilter.blur(sigmaX: kPlaneBlur, sigmaY: kPlaneBlur),
-                  child: SizedBox(
-                    child: Transform.rotate(
-                      angle: pi,
-                      child: SvgPicture.asset(
-                        'assets/svgs/plane.svg',
-                        width: kPlaneSize,
+              //Glow Filter
+              Positioned(
+                top: kPlanetop,
+                left: kPlaneleft,
+                child: ClipRect(
+                  child: BackdropFilter(
+                    filter: ImageFilter.blur(
+                        sigmaX: kPlaneBlur, sigmaY: kPlaneBlur),
+                    child: SizedBox(
+                      child: Transform.rotate(
+                        angle: pi,
+                        child: SvgPicture.asset(
+                          'assets/svgs/plane.svg',
+                          width: kPlaneSize,
+                        ),
                       ),
                     ),
                   ),
                 ),
               ),
-            ),
-            _line(),
-          ],
+              Positioned(
+                  bottom: 40,
+                  left: -5,
+                  child: UpDownButtons(
+                      onDownPressed: survey.back, onUpPressed: survey.next)),
+              _line(),
+              Positioned(
+                left: kPlaneleft + kPlaneSize,
+                right: kPlaneleft,
+                bottom: kPlanetop + kPlaneSize,
+                top: kPlanetop,
+                child: SurveyPage(
+                  index: survey.index,
+                  question: survey.getCurrentQuestion(),
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );
