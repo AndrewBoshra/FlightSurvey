@@ -1,6 +1,5 @@
+import 'package:flight_survey/constants/dims.dart';
 import 'package:flutter/material.dart';
-
-const double dotDimension = 13;
 
 class Dot extends StatelessWidget {
   final Color color;
@@ -17,8 +16,8 @@ class Dot extends StatelessWidget {
         shape: BoxShape.circle,
       ),
       child: SizedBox(
-        height: dotDimension,
-        width: dotDimension,
+        height: kDotDimension,
+        width: kDotDimension,
       ),
     );
   }
