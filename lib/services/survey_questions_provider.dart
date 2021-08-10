@@ -8,16 +8,19 @@ class SurveyQuestionsProvider extends ChangeNotifier {
   SurveyQuestionsProvider(this._survey);
 
   void next() {
-    if (_index >= _survey.questions.length - 1) return;
+    if (!canGoForward()) return;
     _index++;
     notifyListeners();
   }
 
   void back() {
-    if (_index <= 0) return;
+    if (!canGoBack()) return;
     _index--;
     notifyListeners();
   }
+
+  bool canGoBack() => (_index > 0);
+  bool canGoForward() => (_index < _survey.questions.length - 1);
 
   Question getCurrentQuestion() {
     return _survey.questions[_index];

@@ -1,3 +1,4 @@
+import 'package:flight_survey/constants/animation.dart';
 import 'package:flutter/material.dart';
 
 class ItemFader extends StatefulWidget {
@@ -17,22 +18,22 @@ class ItemFaderState extends State<ItemFader>
   void initState() {
     super.initState();
     _animationController =
-        AnimationController(vsync: this, duration: Duration(milliseconds: 600));
+        AnimationController(vsync: this, duration: kFadeDelay);
     _animation =
         CurvedAnimation(parent: _animationController, curve: Curves.easeInOut);
     _animation.addListener(() {});
   }
 
-  void fadeIn() {
+  Future<void> fadeIn() async {
     position = VerticalDirection.down;
     _animationController.value = 0;
-    _animationController.forward();
+    return await _animationController.forward();
   }
 
-  void fadeOut() {
+  Future<void> fadeOut() async {
     position = VerticalDirection.up;
     _animationController.value = 0;
-    _animationController.forward();
+    return await _animationController.forward();
   }
 
   double _getOpacity() => position == VerticalDirection.down
@@ -58,5 +59,11 @@ class ItemFaderState extends State<ItemFader>
       },
       child: widget.child,
     );
+  }
+
+  @override
+  void dispose() {
+    _animationController.dispose();
+    super.dispose();
   }
 }

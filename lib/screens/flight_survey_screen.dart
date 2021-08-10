@@ -1,6 +1,8 @@
 import 'dart:math';
 import 'dart:ui';
 
+import 'package:flight_survey/animation/survey_page_swap.dart';
+import 'package:flight_survey/constants/animation.dart';
 import 'package:flight_survey/constants/colors.dart';
 import 'package:flight_survey/constants/dims.dart';
 import 'package:flight_survey/services/survey_questions_provider.dart';
@@ -45,62 +47,118 @@ class FlightSurveyScreen extends StatelessWidget {
         ),
         backgroundColor: Colors.transparent,
         body: Consumer<SurveyQuestionsProvider>(
-          builder: (context, survey, _) => Stack(
-            children: [
-              Positioned(
-                top: kPlanetop - kPlaneBlur,
-                left: kPlaneleft - kPlaneBlur,
-                child: Opacity(
-                  opacity: 0,
-                  child: Transform.rotate(
-                    angle: pi,
-                    child: SvgPicture.asset(
-                      'assets/svgs/plane.svg',
-                      width: kPlaneSize + 2 * kPlaneBlur,
-                    ),
-                  ),
+          builder: (context, survey, _) =>
+              Consumer<SwapSurveyPageAnimationProvider>(
+            builder: (context, value, child) => Stack(
+              children: [
+                GlowingPlane(
+                  key: value.planeKey,
                 ),
-              ),
-              //Glow Filter
-              Positioned(
-                top: kPlanetop,
-                left: kPlaneleft,
-                child: ClipRect(
-                  child: BackdropFilter(
-                    filter: ImageFilter.blur(
-                        sigmaX: kPlaneBlur, sigmaY: kPlaneBlur),
-                    child: SizedBox(
-                      child: Transform.rotate(
-                        angle: pi,
-                        child: SvgPicture.asset(
-                          'assets/svgs/plane.svg',
-                          width: kPlaneSize,
-                        ),
-                      ),
-                    ),
-                  ),
-                ),
-              ),
-              Positioned(
+                Positioned(
                   bottom: 40,
                   left: -5,
                   child: UpDownButtons(
-                      onDownPressed: survey.back, onUpPressed: survey.next)),
-              _line(),
-              Positioned(
-                left: kPlaneleft + kPlaneSize,
-                right: kPlaneleft,
-                bottom: kPlanetop + kPlaneSize,
-                top: kPlanetop,
-                child: SurveyPage(
-                  index: survey.index,
-                  question: survey.getCurrentQuestion(),
+                    onDownPressed: !survey.canGoBack()
+                        ? null
+                        : () async {
+                            await value.animateOut();
+                            survey.back();
+                          },
+                    onUpPressed: !survey.canGoForward()
+                        ? null
+                        : () async {
+                            await value.animateOut();
+                            survey.next();
+                          },
+                  ),
                 ),
-              ),
-            ],
+                _line(),
+                Positioned(
+                  left: kPlaneleft + kPlaneSize / 2 - kDotDimension / 2,
+                  right: kPlaneleft,
+                  bottom: kPlanetop + kPlaneSize,
+                  top: kPlanetop,
+                  child: SurveyPage(
+                    index: survey.index,
+                    question: survey.getCurrentQuestion(),
+                  ),
+                )
+              ],
+            ),
           ),
         ),
       ),
+    );
+  }
+}
+
+class GlowingPlane extends StatefulWidget {
+  const GlowingPlane({Key? key}) : super(key: key);
+
+  @override
+  GlowingPlaneState createState() => GlowingPlaneState();
+}
+
+class GlowingPlaneState extends State<GlowingPlane>
+    with SingleTickerProviderStateMixin {
+  late AnimationController _animationController;
+  late CurvedAnimation _animation;
+
+  Future glow() async {
+    await _animationController.forward();
+    await Future.delayed(kPlaneGlowDuration);
+    await _animationController.reverse();
+  }
+
+  @override
+  void initState() {
+    _animationController = AnimationController(
+      vsync: this,
+      duration: kFadeDelay,
+    );
+    _animation = CurvedAnimation(
+        parent: _animationController, curve: Curves.easeOutExpo);
+    super.initState();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Stack(
+      children: [
+        Positioned(
+          top: kPlanetop - kPlaneBlur,
+          left: kPlaneleft - kPlaneBlur,
+          child: AnimatedBuilder(
+            animation: _animation,
+            builder: (context, child) =>
+                Opacity(opacity: _animation.value, child: child),
+            child: Transform.rotate(
+              angle: pi,
+              child: SvgPicture.asset(
+                'assets/svgs/plane.svg',
+                width: kPlaneSize + 2 * kPlaneBlur,
+              ),
+            ),
+          ),
+        ),
+        //Glow Filter
+        Positioned(
+          top: kPlanetop,
+          left: kPlaneleft,
+          child: BackdropFilter(
+            filter: ImageFilter.blur(sigmaX: kPlaneBlur, sigmaY: kPlaneBlur),
+            child: SizedBox(
+              child: Transform.rotate(
+                angle: pi,
+                child: SvgPicture.asset(
+                  'assets/svgs/plane.svg',
+                  width: kPlaneSize,
+                ),
+              ),
+            ),
+          ),
+        ),
+      ],
     );
   }
 }

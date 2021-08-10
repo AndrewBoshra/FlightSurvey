@@ -6,8 +6,8 @@ class UpDownButtons extends StatelessWidget {
   const UpDownButtons(
       {Key? key, required this.onDownPressed, required this.onUpPressed})
       : super(key: key);
-  final VoidCallback onDownPressed;
-  final VoidCallback onUpPressed;
+  final VoidCallback? onDownPressed;
+  final VoidCallback? onUpPressed;
   @override
   Widget build(BuildContext context) {
     return Column(
