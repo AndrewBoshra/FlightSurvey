@@ -1,16 +1,11 @@
-# flight_survey
+# Flight Survey Application
 
-A new Flutter project.
+A Flight Survey project created using flutter  
 
-## Getting Started
+the application inspired from  [this design]( https://dribbble.com/shots/5362972-Airlines-Survey/attachments/5362972-Airlines-Survey?mode=media ) by  Minh Pham
 
-This project is a starting point for a Flutter application.
+### The Desgin: 
+![design](https://github.com/AndrewBoshra/FlightSurvey/blob/main/gifs/plane.gif)
 
-A few resources to get you started if this is your first Flutter project:
-
-- [Lab: Write your first Flutter app](https://flutter.dev/docs/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://flutter.dev/docs/cookbook)
-
-For help getting started with Flutter, view our
-[online documentation](https://flutter.dev/docs), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+### The App:
+![application](https://github.com/AndrewBoshra/FlightSurvey/blob/main/gifs/Animation.gif)
