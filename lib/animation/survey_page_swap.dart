@@ -11,6 +11,7 @@ class SwapSurveyPageAnimationProvider extends ChangeNotifier {
   void reset() {
     _choices = [];
     _headers = [];
+    _plane = GlobalKey<GlowingPlaneState>();
   }
 
   GlobalKey<ItemFaderState> addChoice() {

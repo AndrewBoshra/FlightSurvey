@@ -1,4 +1,3 @@
-import 'dart:math';
 import 'dart:ui';
 
 import 'package:flight_survey/animation/survey_page_swap.dart';
@@ -6,14 +5,15 @@ import 'package:flight_survey/constants/animation.dart';
 import 'package:flight_survey/constants/colors.dart';
 import 'package:flight_survey/constants/dims.dart';
 import 'package:flight_survey/services/survey_questions_provider.dart';
+import 'package:flight_survey/widgets/plane_icon.dart';
 import 'package:flight_survey/widgets/survey_page.dart';
 import 'package:flight_survey/widgets/up_down_buttons.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 import 'package:provider/provider.dart';
 
 class FlightSurveyScreen extends StatelessWidget {
   const FlightSurveyScreen({Key? key}) : super(key: key);
+  static const String route = 'flight_survey';
 
   Widget _line() {
     return Positioned(
@@ -100,7 +100,7 @@ class GlowingPlane extends StatefulWidget {
 }
 
 class GlowingPlaneState extends State<GlowingPlane>
-    with SingleTickerProviderStateMixin {
+    with TickerProviderStateMixin {
   late AnimationController _animationController;
   late CurvedAnimation _animation;
 
@@ -108,6 +108,12 @@ class GlowingPlaneState extends State<GlowingPlane>
     await _animationController.forward();
     await Future.delayed(kPlaneGlowDuration);
     await _animationController.reverse();
+  }
+
+  @override
+  void dispose() {
+    _animationController.dispose();
+    super.dispose();
   }
 
   @override
@@ -132,12 +138,8 @@ class GlowingPlaneState extends State<GlowingPlane>
             animation: _animation,
             builder: (context, child) =>
                 Opacity(opacity: _animation.value, child: child),
-            child: Transform.rotate(
-              angle: pi,
-              child: SvgPicture.asset(
-                'assets/svgs/plane.svg',
-                width: kPlaneSize + 2 * kPlaneBlur,
-              ),
+            child: PlaneIcon(
+              size: kPlaneSize + 2 * kPlaneBlur,
             ),
           ),
         ),
@@ -148,12 +150,9 @@ class GlowingPlaneState extends State<GlowingPlane>
           child: BackdropFilter(
             filter: ImageFilter.blur(sigmaX: kPlaneBlur, sigmaY: kPlaneBlur),
             child: SizedBox(
-              child: Transform.rotate(
-                angle: pi,
-                child: SvgPicture.asset(
-                  'assets/svgs/plane.svg',
-                  width: kPlaneSize,
-                ),
+              child: Hero(
+                tag: 'plane logo',
+                child: PlaneIcon(size: kPlaneSize),
               ),
             ),
           ),

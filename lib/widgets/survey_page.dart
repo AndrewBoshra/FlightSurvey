@@ -2,6 +2,7 @@ import 'package:flight_survey/animation/survey_page_swap.dart';
 import 'package:flight_survey/constants/animation.dart';
 import 'package:flight_survey/constants/dims.dart';
 import 'package:flight_survey/models/question.dart';
+import 'package:flight_survey/screens/loading_screen.dart';
 import 'package:flight_survey/services/survey_questions_provider.dart';
 import 'package:flight_survey/widgets/dot.dart';
 import 'package:flight_survey/widgets/item_fader.dart';
@@ -141,12 +142,15 @@ class _OptionItemState extends State<OptionItem>
                       listen: false);
               var surveyProvider =
                   Provider.of<SurveyQuestionsProvider>(context, listen: false);
-              animationProvider.glowPlane();
               nextpage(surveyProvider, animationProvider);
 
               await animationController.forward();
               entry.remove();
               animationController.dispose();
+              animationProvider.glowPlane();
+
+              if (!surveyProvider.canGoForward())
+                Navigator.of(context).pushNamed(LoadingScreen.route);
             },
             child: Text(
               widget.option.toString(),
