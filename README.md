@@ -1,11 +1,23 @@
-# Flight Survey Application
+# Flight Survey
 
-A Flight Survey project created using flutter  
+A mobile survey app for collecting passenger feedback during a flight.
 
-the application inspired from  [this design]( https://dribbble.com/shots/5362972-Airlines-Survey/attachments/5362972-Airlines-Survey?mode=media ) by  Minh Pham
+## Stack
 
-### The Desgin: 
+Flutter · Dart
+
+## Running it
+
+```bash
+flutter pub get
+flutter run
+```
+
+## Notes
+
+Built in 2021 as an early Flutter project.
+
+## Screenshots
+
 ![design](https://github.com/AndrewBoshra/FlightSurvey/blob/main/gifs/plane.gif)
-
-### The App:
 ![application](https://github.com/AndrewBoshra/FlightSurvey/blob/main/gifs/Animation.gif)
